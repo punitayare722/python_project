@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sentiment Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(-45deg, #00c6ff, #0072ff, #6a11cb, #2575fc);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 520px;
+      text-align: center;
+      color: white;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      resize: none;
+      margin-bottom: 15px;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      transition: 0.3s;
+    }
+
+    textarea:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(to right, #ff512f, #dd2476);
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .card {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      text-align: left;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* Positive */
+    .positive {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      box-shadow: 0 5px 20px rgba(46, 204, 113, 0.5);
+    }
+
+    /* Negative */
+    .negative {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      box-shadow: 0 5px 20px rgba(231, 76, 60, 0.5);
+    }
+
+    /* Neutral */
+    .neutral {
+      background: linear-gradient(135deg, #f1c40f, #f39c12);
+      color: white;
+      box-shadow: 0 5px 20px rgba(241, 196, 15, 0.5);
+    }
+
+    .label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .error {
+      margin-top: 10px;
+      color: #ff6b6b;
+      font-weight: 500;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>✨ Sentiment Analyzer</h2>
+
+    <form method="POST">
+      <textarea name="user_input" rows="5" placeholder="Type something amazing...">{{ request.form.user_input }}</textarea>
+      <br>
+      <button type="submit">Analyze 🚀</button>
+    </form>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if cleaned_text %}
+      <div class="card">
+        <span class="label">🧹 Processed Text</span>
+        {{ cleaned_text }}
+      </div>
+    {% endif %}
+
+    {% if sentiment %}
+      <div class="card 
+        {% if sentiment == 'positive' %}positive
+        {% elif sentiment == 'negative' %}negative
+        {% elif sentiment == 'neutral' %}neutral
+        {% endif %}">
+        
+        <span class="label">📊 Prediction</span>
+        
+        {{ '😊 Positive' if sentiment == 'positive' 
+           else '😐 Neutral' if sentiment == 'neutral' 
+           else '😡 Negative' }}
+      </div>
+    {% endif %}
+
+    {% if confidence %}
+      <div class="card">
+        <span class="label">🎯 Confidence</span>
+        {{ confidence }}%
+      </div>
+    {% endif %}
+
+  </div>
+</body>
+</html>
